@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTELARSHOP - Cosmética Natural Premium</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        estelar: {
+                            bg: '#0A0A1F', // Negro profundo / azul noche
+                            gold: '#D4AF37', // Dorado suave
+                            violet: '#8A2BE2', // Violeta cósmico
+                            turquoise: '#40E0D0', // Turquesa suave
+                            mint: '#98FF98', // Verde menta sutil
+                            surface: '#151535', // Superficie ligeramente más clara
+                            surface2: '#1e1e4a',
+                        }
+                    },
+                    boxShadow: {
+                        'glow-gold': '0 0 15px rgba(212, 175, 55, 0.5)',
+                        'glow-violet': '0 0 15px rgba(138, 43, 226, 0.5)',
+                        'glow-turquoise': '0 0 15px rgba(64, 224, 208, 0.5)',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0A0A1F;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A1F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e4a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8A2BE2;
+        }
+
+        .glass {
+            background: rgba(21, 21, 53, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .star-bg {
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+
+        .card-hover-effect {
+            transition: all 0.3s ease;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(138, 43, 226, 0.3);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        /* Modal Backgrounds */
+        .admin-modal-bg {
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            background: rgba(10, 10, 31, 0.9);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-white star-bg relative">
+
+    <!-- Header -->
+    <header class="fixed w-full z-40 transition-all duration-300" id="header">
+        <div class="glass border-b border-white/10">
+            <div class="container mx-auto px-4 lg:px-8 py-4">
+                <div class="flex items-center justify-between relative">
+                    
+                    <!-- Mobile Menu Button (Left on mobile) -->
+                    <button id="mobile-menu-btn" class="lg:hidden text-2xl z-50 w-1/3 text-left">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <!-- Desktop Menu (Left) -->
+                    <nav class="hidden lg:flex items-center gap-6 font-medium text-sm text-gray-300 w-1/3">
+                        <a href="#" class="hover:text-estelar-gold transition-colors">Inicio</a>
+                        <a href="#promociones" class="hover:text-estelar-gold transition-colors">Promos</a>
+                        <a href="#categorias" class="hover:text-estelar-gold transition-colors">Categorías</a>
+                        <a href="#nosotros" class="hover:text-estelar-gold transition-colors">Nosotros</a>
+                    </nav>
+
+                    <!-- Logo (Center) -->
+                    <div id="brand-logo" class="flex items-center justify-center gap-2 z-50 w-1/3 lg:absolute lg:left-1/2 lg:-translate-x-1/2 cursor-pointer select-none" title="Doble clic para administración oculta">
+                        <i class="fa-solid fa-star-of-life text-estelar-gold text-xl animate-pulse-slow"></i>
+                        <span class="text-xl md:text-2xl font-bold tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-white via-estelar-turquoise to-estelar-violet">
+                            ESTELARSHOP
+                        </span>
+                    </div>
+
+                    <!-- Search & Icons (Right) -->
+                    <div class="flex items-center justify-end gap-4 w-1/3">
+                        <div class="hidden xl:block relative group">
+                            <input type="text" placeholder="Buscar..." class="bg-estelar-surface2 text-white text-sm rounded-full pl-10 pr-4 py-2 border border-white/10 focus:outline-none focus:border-estelar-violet w-32 focus:w-48 transition-all duration-300">
+                            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-300">
+                            <button class="hover:text-estelar-turquoise hover:scale-110 transition-all hidden sm:block"><i class="fa-regular fa-user text-xl"></i></button>
+                            <button class="hover:text-estelar-violet hover:scale-110 transition-all hidden sm:block"><i class="fa-regular fa-heart text-xl"></i></button>
+                            <button onclick="toggleCart()" class="relative hover:text-estelar-gold hover:scale-110 transition-all">
+                                <i class="fa-solid fa-bag-shopping text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-estelar-gold text-[#0A0A1F] text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="fixed inset-0 bg-estelar-bg/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 text-xl font-medium transform translate-x-full transition-transform duration-300 z-40">
+            <a href="#" class="hover:text-estelar-gold">Inicio</a>
+            <a href="#promociones" class="hover:text-estelar-gold">Promociones</a>
+            <a href="#categorias" class="hover:text-estelar-gold">Categorías</a>
+            <a href="#nosotros" class="hover:text-estelar-gold">Sobre Nosotros</a>
+        </div>
+    </header>
+
+    <!-- Floating Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 glass border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <h3 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-bag-shopping text-estelar-gold"></i> Tu Carrito Cósmico</h3>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 flex items-center justify-center text-gray-500">
+            <p>Tu carrito está vacío</p>
+        </div>
+        <div class="p-6 border-t border-white/10 bg-estelar-surface">
+            <div class="flex justify-between mb-4 font-medium">
+                <span>Total Estimado</span>
+                <span class="text-xl text-estelar-gold font-bold">$0.00</span>
+            </div>
+            <button class="w-full bg-gradient-to-r from-estelar-violet to-estelar-turquoise text-white font-bold py-3 rounded-full hover:shadow-glow-violet transition-all transform hover:scale-[1.02]">
+                Proceder al Pago
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Hero Banner -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1615397323755-d44a2c72ce2c?auto=format&fit=crop&q=80&w=1920" alt="Hero Nebula" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A1F]/80 via-[#0A0A1F]/50 to-[#0A0A1F]"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
+            <span class="text-estelar-mint font-medium tracking-widest text-sm md:text-base uppercase mb-4 block animate-pulse-slow">100% Natural • Cruelty Free</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                Cosmética que <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-estelar-gold via-white to-estelar-turquoise">ilumina tu esencia</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">
+                Descubre el poder de los ingredientes naturales fusionados con la energía del universo. Cuidado premium para una piel radiante.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="#tienda" class="w-full sm:w-auto px-8 py-4 bg-white text-[#0A0A1F] font-bold rounded-full hover:bg-estelar-gold hover:shadow-glow-gold transition-all duration-300 transform hover:-translate-y-1">
+                    Explorar colección
+                </a>
+                <a href="#promociones" class="w-full sm:w-auto px-8 py-4 glass text-white font-medium rounded-full hover:border-estelar-turquoise hover:text-estelar-turquoise transition-all duration-300">
+                    Ver promociones del día
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce z-10">
+            <i class="fa-solid fa-chevron-down text-2xl text-white/50"></i>
+        </div>
+    </section>
+
+    <!-- Promociones del día (Renderizado Dinámico) -->
+    <section id="promociones" class="py-20 relative">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+                        <i class="fa-solid fa-bolt text-estelar-gold"></i> Promociones del Día
+                    </h2>
+                    <p class="text-gray-400 mt-2">Ofertas estelares por tiempo limitado</p>
+                </div>
+            </div>
+
+            <!-- Contenedor dinámico -->
+            <div id="promo-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Tarjetas cargadas vía JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categorías Principales -->
+    <section id="categorias" class="py-20 bg-estelar-surface/30">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Explora Nuestro Universo</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Encuentra la rutina perfecta para cada aspecto de tu bienestar natural.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="#" class="relative h-80 rounded-2xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&q=80&w=800" alt="Cuidado Facial" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A1F] via-[#0A0A1F]/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full">
+                        <h3 class="text-2xl font-bold mb-2 text-white group-hover:text-estelar-turquoise transition-colors">Cuidado Facial</h3>
+                        <p class="text-gray-300 text-sm mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">Rutinas completas para iluminar tu rostro.</p>
+                        <span class="text-estelar-gold font-medium flex items-center gap-2">Ver productos <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="#" class="relative h-80 rounded-2xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=800" alt="Cuerpo" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A1F] via-[#0A0A1F]/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full">
+                        <h3 class="text-2xl font-bold mb-2 text-white group-hover:text-estelar-turquoise transition-colors">Cuerpo</h3>
+                        <p class="text-gray-300 text-sm mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">Hidratación profunda.</p>
+                        <span class="text-estelar-gold font-medium flex items-center gap-2">Ver productos <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="#" class="relative h-80 rounded-2xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800" alt="Perfumes" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A1F] via-[#0A0A1F]/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full">
+                        <h3 class="text-2xl font-bold mb-2 text-white group-hover:text-estelar-turquoise transition-colors">Perfumes</h3>
+                        <p class="text-gray-300 text-sm mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">Fragancias inspiradas en constelaciones.</p>
+                        <span class="text-estelar-gold font-medium flex items-center gap-2">Ver productos <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Elegidos de la semana (Renderizado Dinámico) -->
+    <section id="tienda" class="py-20 relative">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-estelar-violet font-semibold tracking-widest text-sm uppercase mb-2 block">Tendencias</span>
+                <h2 class="text-3xl md:text-4xl font-bold">Los más elegidos de la semana</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-estelar-violet to-estelar-turquoise mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <!-- Contenedor dinámico -->
+            <div id="elegidos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tarjetas cargadas vía JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Por qué elegir ESTELARSHOP y Banner Intermedio omitidos por brevedad pero mantenemos Footer -->
+    <section id="nosotros" class="py-24 relative overflow-hidden">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-estelar-violet/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
+        <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
+            <h2 class="text-4xl font-bold mb-6">Filosofía de una <span class="text-transparent bg-clip-text bg-gradient-to-r from-estelar-turquoise to-estelar-mint">belleza consciente</span></h2>
+            <p class="text-gray-300 max-w-2xl mx-auto">Nuestras fórmulas combinan la pureza botánica con tecnología cosmética de vanguardia para ofrecerte resultados estelares, respetando siempre nuestro planeta.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#050510] pt-10 pb-10 border-t border-white/10 mt-10">
+        <div class="container mx-auto px-4 lg:px-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 ESTELARSHOP. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+
+    <!-- ============================================== -->
+    <!-- ADMINISTRACION MODALS -->
+    <!-- ============================================== -->
+
+    <!-- Modal Login -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden admin-modal-bg flex items-center justify-center p-4">
+        <div class="glass p-8 rounded-2xl w-full max-w-md border border-estelar-violet/30 shadow-glow-violet transform scale-95 transition-all">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-lock text-3xl text-estelar-gold mb-2"></i>
+                <h2 class="text-2xl font-bold">Acceso Estelar</h2>
+                <p class="text-gray-400 text-sm">Panel de Administración</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Correo Electrónico</label>
+                    <input type="email" id="admin-email" value="admin@estelarshop.com" class="w-full bg-estelar-surface text-white rounded-lg px-4 py-2 border border-white/10 focus:border-estelar-turquoise focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">Contraseña</label>
+                    <input type="password" id="admin-password" value="admin123" class="w-full bg-estelar-surface text-white rounded-lg px-4 py-2 border border-white/10 focus:border-estelar-turquoise focus:outline-none">
+                </div>
+                <p id="login-error" class="text-red-400 text-xs hidden">Credenciales incorrectas.</p>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeAdminLogin()" class="w-1/2 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition-colors">Cancelar</button>
+                    <button type="submit" class="w-1/2 py-2 rounded-lg bg-gradient-to-r from-estelar-violet to-estelar-turquoise font-bold hover:shadow-glow-violet transition-shadow text-[#0A0A1F]">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Dashboard Admin -->
+    <div id="admin-dashboard-modal" class="fixed inset-0 z-50 hidden admin-modal-bg overflow-y-auto">
+        <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 glass p-4 rounded-xl border-estelar-turquoise/30 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-estelar-turquoise flex items-center gap-2">
+                        <i class="fa-solid fa-user-shield"></i> Panel de Control
+                    </h2>
+                </div>
+                <button onclick="closeAdminDashboard()" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-power-off"></i> Salir
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1">
+                <!-- Formulario de Producto -->
+                <div class="lg:col-span-1 glass p-6 rounded-2xl h-fit border border-white/10">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" id="form-title">
+                        <i class="fa-solid fa-plus text-estelar-gold"></i> Agregar Producto
+                    </h3>
+                    <form id="product-form" class="space-y-4">
+                        <input type="hidden" id="prod-id">
+                        
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Nombre</label>
+                            <input type="text" id="prod-name" required class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Categoría</label>
+                                <select id="prod-cat" class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                                    <option value="Cuidado Facial">Cuidado Facial</option>
+                                    <option value="Cuerpo">Cuerpo</option>
+                                    <option value="Perfumes">Perfumes</option>
+                                    <option value="Cabello">Cabello</option>
+                                    <option value="Maquillaje">Maquillaje</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Sección</label>
+                                <select id="prod-section" class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                                    <option value="promociones">Promociones</option>
+                                    <option value="elegidos">Más Elegidos</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Precio Normal ($)</label>
+                                <input type="number" id="prod-price" required step="0.01" min="0" class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Precio Oferta</label>
+                                <input type="number" id="prod-discount" step="0.01" min="0" placeholder="Opcional" class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Imagen (Archivo o URL)</label>
+                            <input type="file" id="prod-image-file" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-estelar-violet file:text-white hover:file:bg-estelar-turquoise mb-2 cursor-pointer">
+                            <input type="text" id="prod-image-url" placeholder="O pega una URL de imagen..." class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none">
+                            <div class="mt-2 h-32 bg-black/30 rounded-lg overflow-hidden border border-white/5 flex items-center justify-center relative">
+                                <span class="text-xs text-gray-500 absolute" id="preview-placeholder">Vista previa</span>
+                                <img id="image-preview" class="w-full h-full object-cover hidden relative z-10">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Descripción corta</label>
+                            <textarea id="prod-desc" rows="2" class="w-full bg-estelar-surface text-white rounded-lg px-3 py-2 border border-white/10 focus:border-estelar-turquoise text-sm focus:outline-none resize-none"></textarea>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button type="button" onclick="resetForm()" class="flex-1 py-2 rounded-lg border border-white/20 hover:bg-white/10 text-sm transition-colors">Limpiar</button>
+                            <button type="submit" class="flex-1 py-2 rounded-lg bg-estelar-turquoise text-[#0A0A1F] font-bold text-sm hover:bg-white transition-colors">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Productos -->
+                <div class="lg:col-span-2 glass p-6 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list text-estelar-violet"></i> Inventario Actual
+                    </h3>
+                    <div class="overflow-x-auto rounded-lg border border-white/5">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-xs text-gray-400 uppercase bg-estelar-surface border-b border-white/10">
+                                <tr>
+                                    <th class="px-4 py-3">Img</th>
+                                    <th class="px-4 py-3">Nombre</th>
+                                    <th class="px-4 py-3">Categoría / Sec</th>
+                                    <th class="px-4 py-3">Precio</th>
+                                    <th class="px-4 py-3 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-product-list" class="divide-y divide-white/5 bg-black/20">
+                                <!-- Filas renderizadas vía JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Principales -->
+    <script>
+        // ==========================================
+        // UI & NAVBAR
+        // ==========================================
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-[#0A0A1F]/90', 'backdrop-blur-md', 'shadow-lg');
+                header.querySelector('.glass').classList.remove('border-b');
+            } else {
+                header.classList.remove('bg-[#0A0A1F]/90', 'backdrop-blur-md', 'shadow-lg');
+                header.querySelector('.glass').classList.add('border-b');
+            }
+        });
+
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const icon = mobileBtn.querySelector('i');
+        
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('translate-x-full');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            const isClosed = cartSidebar.classList.contains('translate-x-full');
+            
+            if (isClosed) {
+                cartSidebar.classList.remove('translate-x-full');
+                cartOverlay.classList.remove('hidden');
+                setTimeout(() => cartOverlay.classList.add('opacity-100'), 10);
+            } else {
+                cartSidebar.classList.add('translate-x-full');
+                cartOverlay.classList.remove('opacity-100');
+                setTimeout(() => cartOverlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // ==========================================
+        // STATE MANAGEMENT (LOCALSTORAGE)
+        // ==========================================
+        const defaultProducts = [
+            {
+                id: 'prod_1', name: 'Serum Nebulosa Revitalizante', category: 'Cuidado Facial', section: 'promociones',
+                price: 75.00, discountPrice: 52.00,
+                image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=400',
+                desc: 'Serum iluminador y restaurador celular.'
+            },
+            {
+                id: 'prod_2', name: 'Manteca Corporal Aurora', category: 'Cuerpo', section: 'promociones',
+                price: 45.00, discountPrice: 38.00,
+                image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=400',
+                desc: 'Nutrición intensa para pieles secas.'
+            },
+            {
+                id: 'prod_3', name: 'Elixir Lunar Facial', category: 'Cuidado Facial', section: 'elegidos',
+                price: 45.00, discountPrice: null,
+                image: 'https://images.unsplash.com/photo-1615397323755-d44a2c72ce2c?auto=format&fit=crop&q=80&w=400',
+                desc: 'Tratamiento de noche intensivo.'
+            },
+            {
+                id: 'prod_4', name: 'Aceite Estelar Corporal', category: 'Cuerpo', section: 'elegidos',
+                price: 28.00, discountPrice: null,
+                image: 'https://images.unsplash.com/photo-1629198688000-71f23e745b6e?auto=format&fit=crop&q=80&w=400',
+                desc: 'Aceite luminoso con destellos dorados.'
+            }
+        ];
+
+        let products = [];
+
+        function initProducts() {
+            const stored = localStorage.getItem('estelar_products');
+            if (stored) {
+                products = JSON.parse(stored);
+            } else {
+                products = defaultProducts;
+                saveProducts();
+            }
+            renderStoreFront();
+        }
+
+        function saveProducts() {
+            localStorage.setItem('estelar_products', JSON.stringify(products));
+            renderStoreFront();
+        }
+
+        // ==========================================
+        // RENDER FRONTEND STORE
+        // ==========================================
+        function renderStoreFront() {
+            const promoContainer = document.getElementById('promo-container');
+            const elegidosContainer = document.getElementById('elegidos-container');
+            
+            promoContainer.innerHTML = '';
+            elegidosContainer.innerHTML = '';
+
+            products.forEach(p => {
+                if (p.section === 'promociones') {
+                    let badge = '';
+                    let priceHTML = `<span class="text-estelar-gold font-bold text-xl">$${p.price.toFixed(2)}</span>`;
+                    
+                    if (p.discountPrice && p.discountPrice < p.price) {
+                        const percent = Math.round((1 - (p.discountPrice / p.price)) * 100);
+                        badge = `<div class="absolute top-6 left-6 z-10 bg-estelar-violet text-white text-xs font-bold px-3 py-1 rounded-full shadow-glow-violet">-${percent}%</div>`;
+                        priceHTML = `
+                            <span class="text-estelar-gold font-bold text-xl">$${p.discountPrice.toFixed(2)}</span>
+                            <span class="text-gray-500 line-through text-sm">$${p.price.toFixed(2)}</span>
+                        `;
+                    }
+
+                    promoContainer.innerHTML += `
+                        <div class="glass rounded-2xl p-4 border border-white/10 card-hover-effect relative group">
+                            ${badge}
+                            <div class="relative h-64 rounded-xl overflow-hidden mb-4">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                <button class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur text-[#0A0A1F] font-bold py-2 px-6 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-estelar-gold">
+                                    <i class="fa-solid fa-cart-plus mr-1"></i> Agregar
+                                </button>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-estelar-mint text-xs font-medium uppercase tracking-wider">${p.category}</p>
+                                <h3 class="font-bold text-lg line-clamp-1" title="${p.name}">${p.name}</h3>
+                                <div class="flex items-center gap-2">${priceHTML}</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (p.section === 'elegidos') {
+                    let displayPrice = p.discountPrice ? p.discountPrice : p.price;
+                    elegidosContainer.innerHTML += `
+                        <div class="group">
+                            <div class="relative bg-estelar-surface rounded-2xl aspect-[3/4] overflow-hidden mb-4 border border-transparent hover:border-white/10 transition-colors shadow-lg">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover mix-blend-overlay opacity-80 group-hover:scale-105 transition-transform duration-700">
+                                <button class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] glass border-white/20 text-white font-medium py-3 rounded-xl opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-white hover:text-black">
+                                    <i class="fa-solid fa-cart-plus mr-2"></i> Agregar
+                                </button>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex justify-center gap-1 text-estelar-gold text-xs mb-2">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                </div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-estelar-turquoise transition-colors line-clamp-1" title="${p.name}">${p.name}</h3>
+                                <p class="text-gray-400 text-sm mb-2 line-clamp-1" title="${p.desc}">${p.desc}</p>
+                                <p class="text-xl font-bold text-white">$${displayPrice.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // ==========================================
+        // HIDDEN TRIGGER (3 CLICKS LOGO)
+        // ==========================================
+        let clickCount = 0;
+        let clickTimer;
+        
+        document.getElementById('brand-logo').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+            
+            if (clickCount >= 3) {
+                clickCount = 0;
+                document.getElementById('admin-login-modal').classList.remove('hidden');
+            } else {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 1500); // Resetea si no se hace clic rápido
+            }
+        });
+
+        // ==========================================
+        // ADMIN LOGIN
+        // ==========================================
+        function closeAdminLogin() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-password').value;
+
+            // Credenciales estáticas por requerimiento
+            if (email === 'admin@estelarshop.com' && pass === 'admin123') {
+                closeAdminLogin();
+                openAdminDashboard();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+
+        // ==========================================
+        // ADMIN DASHBOARD & CRUD
+        // ==========================================
+        function openAdminDashboard() {
+            document.getElementById('admin-dashboard-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+            renderAdminTable();
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('admin-dashboard-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            resetForm();
+        }
+
+        let currentImageBase64 = '';
+
+        // Manejar Archivo Local -> Base64
+        document.getElementById('prod-image-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImageBase64 = event.target.result;
+                    document.getElementById('prod-image-url').value = ''; // Limpiar URL si sube archivo
+                    showPreview(currentImageBase64);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Manejar URL Externa
+        document.getElementById('prod-image-url').addEventListener('input', function(e) {
+            currentImageBase64 = ''; // Resetear Base64 si usa URL
+            document.getElementById('prod-image-file').value = '';
+            showPreview(e.target.value);
+        });
+
+        function showPreview(src) {
+            const preview = document.getElementById('image-preview');
+            const placeholder = document.getElementById('preview-placeholder');
+            if (src) {
+                preview.src = src;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+        }
+
+        // Renderizar Tabla de Inventario
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-product-list');
+            tbody.innerHTML = '';
+
+            if(products.length === 0){
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">No hay productos en el inventario.</td></tr>';
+                return;
+            }
+
+            products.forEach(p => {
+                const isPromo = p.section === 'promociones';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-white/5 transition-colors group">
+                        <td class="px-4 py-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg border border-white/10"></td>
+                        <td class="px-4 py-3 font-medium">
+                            <span class="block text-white line-clamp-1">${p.name}</span>
+                            <span class="text-xs text-gray-500 line-clamp-1">${p.desc}</span>
+                        </td>
+                        <td class="px-4 py-3 text-xs">
+                            <span class="${isPromo ? 'bg-estelar-violet/20 text-estelar-violet' : 'bg-estelar-turquoise/20 text-estelar-turquoise'} px-2 py-1 rounded-md mb-1 inline-block border border-current/20">
+                                ${p.section === 'promociones' ? 'Promo' : 'Elegidos'}
+                            </span>
+                            <span class="block text-gray-400 mt-1">${p.category}</span>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            $${p.price.toFixed(2)}
+                            ${p.discountPrice ? `<span class="block text-estelar-gold text-xs mt-1">Oferta: $${p.discountPrice.toFixed(2)}</span>` : ''}
+                        </td>
+                        <td class="px-4 py-3 text-right opacity-50 group-hover:opacity-100 transition-opacity">
+                            <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded bg-white/10 hover:bg-estelar-turquoise text-white hover:text-[#0A0A1F] transition-colors mr-1" title="Editar"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded bg-white/10 hover:bg-red-500 text-white transition-colors" title="Eliminar"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Crear o Editar Producto
+        document.getElementById('product-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('prod-id').value || 'prod_' + Date.now().toString();
+            const name = document.getElementById('prod-name').value;
+            const category = document.getElementById('prod-cat').value;
+            const section = document.getElementById('prod-section').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            
+            let discountPrice = document.getElementById('prod-discount').value;
+            discountPrice = discountPrice ? parseFloat(discountPrice) : null;
+            
+            const desc = document.getElementById('prod-desc').value;
+            
+            let image = currentImageBase64 || document.getElementById('prod-image-url').value;
+            // Fallback en caso de que no suba imagen al crear uno nuevo
+            if(!image) image = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=400';
+
+            const newProd = { id, name, category, section, price, discountPrice, image, desc };
+
+            const index = products.findIndex(p => p.id === id);
+            if (index >= 0) {
+                products[index] = newProd; // Editar
+            } else {
+                products.push(newProd); // Crear nuevo
+            }
+
+            saveProducts();
+            renderAdminTable();
+            resetForm();
+        });
+
+        // Cargar datos en el formulario
+        function editProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen text-estelar-violet"></i> Editar Producto';
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-cat').value = p.category;
+            document.getElementById('prod-section').value = p.section;
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-discount').value = p.discountPrice || '';
+            document.getElementById('prod-desc').value = p.desc;
+            
+            currentImageBase64 = '';
+            document.getElementById('prod-image-file').value = '';
+            
+            // Si la imagen es URL, ponerla en el input de URL, si es base64 (empieza con data:image), no ponerla en el input texto
+            if(p.image.startsWith('http')) {
+                document.getElementById('prod-image-url').value = p.image;
+            } else {
+                document.getElementById('prod-image-url').value = '';
+                currentImageBase64 = p.image;
+            }
+            showPreview(p.image);
+        }
+
+        // Eliminar Producto
+        function deleteProduct(id) {
+            if(confirm('¿Estás seguro de que deseas eliminar este producto estelar?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                renderAdminTable();
+            }
+        }
+
+        // Limpiar formulario
+        function resetForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('prod-id').value = '';
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus text-estelar-gold"></i> Agregar Producto';
+            currentImageBase64 = '';
+            showPreview('');
+        }
+
+        // Iniciar
+        document.addEventListener('DOMContentLoaded', initProducts);
+    </script>
+</body>
+</html>
